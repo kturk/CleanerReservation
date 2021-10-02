@@ -4,6 +4,6 @@ import com.justlife.casestudy.model.Reservation;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ReservationRepository extends BaseRepository<Reservation, Long>{
+public interface ReservationRepository extends BaseRepository<Reservation>{
 
 }

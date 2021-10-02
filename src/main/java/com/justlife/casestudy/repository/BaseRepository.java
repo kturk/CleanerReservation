@@ -1,9 +1,7 @@
 package com.justlife.casestudy.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import com.justlife.casestudy.model.BaseEntity;
 import org.springframework.data.repository.NoRepositoryBean;
 
 @NoRepositoryBean
-public interface BaseRepository<T, ID> extends JpaRepository<T, ID>, JpaSpecificationExecutor<T> {}
-
+public interface BaseRepository<T extends BaseEntity> extends ModelRepository<T, Long> {}

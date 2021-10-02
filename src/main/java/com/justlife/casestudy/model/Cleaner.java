@@ -14,8 +14,8 @@ import java.util.List;
 @AllArgsConstructor @NoArgsConstructor
 public class Cleaner extends BaseEntity{
 
-//    @Column
-//    private String name;
+    @Column
+    private String name;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "cleaner")
     @OrderBy("startTime asc")
