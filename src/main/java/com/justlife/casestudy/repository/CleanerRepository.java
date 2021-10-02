@@ -6,4 +6,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CleanerRepository extends BaseRepository<Cleaner>{
 
+    //@Query("SELECT where type :i");
+    //public int countCleaner(Type);
+    //)
 }
