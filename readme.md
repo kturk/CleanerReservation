@@ -12,15 +12,15 @@ You can:
 ----------
 
 ## Database architecture
-![img.png](img.png)
+![img.png](src/main/resources/static/img.png)
 
 ## API Documentation
-![img_1.png](img_1.png)
+![img_1.png](src/main/resources/static/img_1.png)
 
-![img_2.png](img_2.png)
+![img_2.png](src/main/resources/static/img_2.png)
 
-![img_3.png](img_3.png)
+![img_3.png](src/main/resources/static/img_3.png)
 
-![img_4.png](img_4.png)
+![img_4.png](src/main/resources/static/img_4.png)
 
-![img_5.png](img_5.png)
+![img_5.png](src/main/resources/static/img_5.png)
