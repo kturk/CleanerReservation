@@ -13,4 +13,6 @@ public class CleanerService extends BaseService<Cleaner>{
         super("Cleaner", repository);
         this.cleanerRepository = repository;
     }
+
+
 }

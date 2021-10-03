@@ -24,6 +24,7 @@ public class Cleaner extends BaseEntity{
 //    @ManyToOne
 //    @JoinColumn(name = "reservation_id", nullable = false)
     @ManyToMany(mappedBy = "cleaners", cascade = { CascadeType.ALL })
+    @OrderBy("startDateTime asc")
     private List<Reservation> reservation;
 
     @ManyToOne

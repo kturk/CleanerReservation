@@ -9,20 +9,16 @@ import java.time.LocalDateTime;
 @Setter
 //@AllArgsConstructor
 //@NoArgsConstructor
-public class NewReservationRequest extends BaseRequest{
+public class AvailableCleanersRequest extends BaseRequest{
 
-//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
+    //    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
 //    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
 
     private int duration;
 
-    private int cleanerCount;
-
-    public NewReservationRequest(LocalDateTime startDateTime,
-                                 int duration,
-                                 int cleanerCount) {
+    public AvailableCleanersRequest(LocalDateTime startDateTime,
+                                 int duration) {
         super(startDateTime, startDateTime.plusHours(duration));
         this.duration = duration;
-        this.cleanerCount = cleanerCount;
     }
 }
