@@ -1,7 +1,7 @@
 package com.justlife.casestudy.service;
 
 import com.justlife.casestudy.model.Cleaner;
-import com.justlife.casestudy.model.CleaningInterval;
+
 import com.justlife.casestudy.model.Reservation;
 import com.justlife.casestudy.model.Vehicle;
 import com.justlife.casestudy.payload.request.NewReservationRequest;
@@ -41,8 +41,8 @@ public class ReservationService extends BaseService<Reservation> {
             List<Cleaner> cleaners = vehicle.getCleaners();
             for (Cleaner cleaner : cleaners){
                 boolean isAvailableCleaner = true;
-                for (CleaningInterval interval : cleaner.getCleaningTimes()){
-                    if (!isAvailableInterval(request, interval)) {
+                for (Reservation reservation : cleaner.getReservation()){
+                    if (!isAvailableInterval(request, reservation)) {
                         isAvailableCleaner = false;
                         break;
                     }
@@ -62,12 +62,12 @@ public class ReservationService extends BaseService<Reservation> {
         return availableCleaners.size() == request.getCleanerCount();
     }
 
-    private boolean isAvailableInterval(NewReservationRequest request, CleaningInterval interval) {
-        return  (request.getStartDateTime().isAfter(interval.getStartTime())
-                && request.getEndDateTime().isAfter(interval.getEndTime()))
+    private boolean isAvailableInterval(NewReservationRequest request, Reservation reservation) {
+        return  (request.getStartDateTime().isAfter(reservation.getStartDateTime())
+                && request.getEndDateTime().isAfter(reservation.getEndDateTime()))
                 ||
-                (request.getStartDateTime().isBefore(interval.getStartTime())
-                && request.getEndDateTime().isBefore(interval.getEndTime()));
+                (request.getStartDateTime().isBefore(reservation.getStartDateTime())
+                && request.getEndDateTime().isBefore(reservation.getEndDateTime()));
     }
 
     public String updateReservation(Long reservationId, LocalDateTime newDateTime) {

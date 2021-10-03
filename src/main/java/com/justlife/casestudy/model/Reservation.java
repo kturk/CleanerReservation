@@ -4,14 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.joda.time.DateTime;
-import org.joda.time.LocalDateTime;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -29,7 +25,28 @@ public class Reservation extends BaseEntity {
     @Column
     private int duration;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "reservation")
+    @Column
+    private LocalDateTime endDateTime;
+
+//    @OneToMany(fetch = FetchType.EAGER, mappedBy = "reservation")
+    @ManyToMany(cascade = {
+            CascadeType.ALL
+    })
+    @JoinTable(
+            name = "reservations_cleaners",
+            joinColumns = {
+                    @JoinColumn(name = "reservation_id")
+            },
+            inverseJoinColumns = {
+                    @JoinColumn(name = "cleaner_id")
+            }
+    )
     private List<Cleaner> cleaners;
 
+    public Reservation(LocalDateTime startDateTime, int duration, List<Cleaner> cleaners) {
+        this.startDateTime = startDateTime;
+        this.duration = duration;
+        this.endDateTime = startDateTime.plusHours(duration);
+        this.cleaners = cleaners;
+    }
 }

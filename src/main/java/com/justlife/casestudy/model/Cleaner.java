@@ -17,14 +17,14 @@ public class Cleaner extends BaseEntity{
     @Column
     private String name;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "cleaner")
-    @OrderBy("startTime asc")
-    private List<CleaningInterval> cleaningTimes;
+//    @OneToMany(fetch = FetchType.EAGER, mappedBy = "cleaner")
+//    @OrderBy("startTime asc")
+//    private List<CleaningInterval> cleaningTimes;
 
-    @ManyToOne
-    @JoinColumn(name = "reservation_id", nullable = false)
-    @NotNull
-    private Reservation reservation;
+//    @ManyToOne
+//    @JoinColumn(name = "reservation_id", nullable = false)
+    @ManyToMany(mappedBy = "cleaners", cascade = { CascadeType.ALL })
+    private List<Reservation> reservation;
 
     @ManyToOne
     @JoinColumn(name = "vehicle_id", nullable = false)

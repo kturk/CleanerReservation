@@ -29,7 +29,9 @@ public class NewReservationRequest {
 
     private int cleanerCount;
 
-    public NewReservationRequest(LocalDateTime startDateTime, int duration, int cleanerCount) {
+    public NewReservationRequest(LocalDateTime startDateTime,
+                                 int duration,
+                                 int cleanerCount) {
         this.startDateTime = startDateTime;
         this.duration = duration;
         this.endDateTime = startDateTime.plusHours(duration);
