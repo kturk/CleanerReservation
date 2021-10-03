@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class CleaningShiftAfter22Exception extends RuntimeException {
 
     public CleaningShiftAfter22Exception() {
-
         super("Cleaning shift cannot end after 22:00!");
     }
 }

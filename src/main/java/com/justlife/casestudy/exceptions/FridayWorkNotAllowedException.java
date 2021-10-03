@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class FridayWorkNotAllowedException extends RuntimeException {
 
     public FridayWorkNotAllowedException() {
-
         super("Cleaners don't work in Fridays!");
     }
 }

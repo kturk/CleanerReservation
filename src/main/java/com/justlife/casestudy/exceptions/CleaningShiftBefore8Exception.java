@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class CleaningShiftBefore8Exception extends RuntimeException {
 
     public CleaningShiftBefore8Exception() {
-
         super("Cleaning shift cannot start before 08:00!");
     }
 }

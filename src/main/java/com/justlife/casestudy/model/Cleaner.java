@@ -17,12 +17,6 @@ public class Cleaner extends BaseEntity{
     @Column
     private String name;
 
-//    @OneToMany(fetch = FetchType.EAGER, mappedBy = "cleaner")
-//    @OrderBy("startTime asc")
-//    private List<CleaningInterval> cleaningTimes;
-
-//    @ManyToOne
-//    @JoinColumn(name = "reservation_id", nullable = false)
     @ManyToMany(mappedBy = "cleaners", cascade = { CascadeType.ALL })
     @OrderBy("startDateTime asc")
     private List<Reservation> reservation;
@@ -31,5 +25,4 @@ public class Cleaner extends BaseEntity{
     @JoinColumn(name = "vehicle_id", nullable = false)
     @NotNull
     private Vehicle vehicle;
-
 }

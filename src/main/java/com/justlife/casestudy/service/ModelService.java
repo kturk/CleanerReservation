@@ -16,12 +16,6 @@ public class ModelService<T, ID extends Serializable> {
         this.repository = repository;
     }
 
-//    public List<T> listAll () {
-//        List<T> returnList = new ArrayList<>();
-//        repository.findAll().forEach(returnList::add);
-//        return returnList;
-//    }
-
     public List<T> findAll() {
         return repository.findAll();
     }

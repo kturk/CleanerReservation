@@ -28,7 +28,6 @@ public class Reservation extends BaseEntity {
     @Column
     private LocalDateTime endDateTime;
 
-//    @OneToMany(fetch = FetchType.EAGER, mappedBy = "reservation")
     @ManyToMany(cascade = {
             CascadeType.ALL
     })

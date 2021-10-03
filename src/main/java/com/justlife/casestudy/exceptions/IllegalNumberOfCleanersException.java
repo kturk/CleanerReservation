@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class IllegalNumberOfCleanersException extends RuntimeException {
 
     public IllegalNumberOfCleanersException() {
-
         super("Number of cleaners has to be 1, 2 or 3!");
     }
 }

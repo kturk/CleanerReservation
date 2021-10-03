@@ -11,6 +11,7 @@ import com.justlife.casestudy.payload.response.AvailabilityCheckResponseForDay;
 import com.justlife.casestudy.repository.ReservationRepository;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -63,29 +64,32 @@ public class ReservationService extends BaseService<Reservation> {
             String availableTimesOfCleaner = "";
             LocalTime intervalStart = LocalTime.parse("08:00");
             for (Reservation reservation: reservationsOfCleaner) {
-                // Reservation day ile ayni gun mu
                 if (isDateSame(day, reservation)) {
                     LocalTime timeOfReservation = getTimeFromLocalDateTime(reservation.getStartDateTime());
-                    // intervalStartla reservationStartin arasindaki farki bulup (en az 2 saat) 08:00-10:00 gibi ekleyecegiz available time stringine responsetaki
-                    // interval starti reservationEnd + 30 dk olarak guncelle
                     if (isDurationAvailable(timeOfReservation, intervalStart)) {
                         availableTimesOfCleaner += getAvailableTimeAsString(intervalStart, timeOfReservation);
-                        intervalStart = getTimeFromLocalDateTime(reservation.getEndDateTime()).plusMinutes(30);
+                        intervalStart = add30MinuteBreak(reservation);
                     }
                 }
-                // listenin son reservationinin endtimei 22.00dan onceyse ve en az 2 saat bosluk varsa
             if (isDurationAvailable(LocalTime.parse("22:00"), intervalStart))
                 availableTimesOfCleaner += getAvailableTimeAsString(intervalStart, LocalTime.parse("22:00"));
             }
-            if (availableTimesOfCleaner.equals(""))
+            if (isAllReservationsInDifferentDays(availableTimesOfCleaner))
                 return new AvailabilityCheckResponseForDay(cleaner.getName(), "08:00-22:00");
             return new AvailabilityCheckResponseForDay(cleaner.getName(), availableTimesOfCleaner);
         }
     }
 
+    private boolean isAllReservationsInDifferentDays(String availableTimesOfCleaner) {
+        return availableTimesOfCleaner.equals("");
+    }
+
+    private LocalTime add30MinuteBreak(Reservation reservation) {
+        return getTimeFromLocalDateTime(reservation.getEndDateTime()).plusMinutes(30);
+    }
+
     private boolean isDurationAvailable(LocalTime timeOfReservation, LocalTime intervalStart) {
-        long minutes = Duration.between(intervalStart, timeOfReservation).toMinutes();
-        return minutes > 120;
+        return Duration.between(intervalStart, timeOfReservation).toMinutes() > 120;
     }
 
     private String getAvailableTimeAsString(LocalTime intervalStart, LocalTime timeOfReservation) {
@@ -101,45 +105,10 @@ public class ReservationService extends BaseService<Reservation> {
     }
 
     public List<Cleaner> getAvailableCleaners(LocalDateTime startDateTime, LocalDateTime endDateTime) {
-//        List<Vehicle> vehicles = vehicleService.findAll();
-//        // Reservation tablosundan cakisan reservationlari getir
-//        List<Cleaner> availableCleaners = new ArrayList<>();
-//        for (Vehicle vehicle : vehicles){
-//            List<Cleaner> cleaners = vehicle.getCleaners();
-//            for (Cleaner cleaner : cleaners){
-//                boolean isAvailableCleaner = true;
-//                for (Reservation reservation : cleaner.getReservation()){
-//                    if (!isAvailableInterval(startDateTime, endDateTime.plusMinutes(30), reservation)) {
-//                        isAvailableCleaner = false;
-//                        break;
-//                    }
-//                }
-//                if (isAvailableCleaner)
-//                    availableCleaners.add(cleaner);
-////                if (isEnoughCleaners(request, availableCleaners))
-////                    return availableCleaners;
-//            }
-////            availableCleaners.clear();
-//        }
-//        return availableCleaners;
-        List<Cleaner> result = reservationRepository.findAvailableCleaners(startDateTime, endDateTime);
-        System.out.println(result.size() == 1);
-        System.out.println(result.get(0).getName().equals("can"));
-        return result;
-    }
-
-    // 13.00 - 15.00 eski
-    // 17.00 - 19.00 yeni
-    // 14.00 - 16.00
-    private boolean isAvailableInterval(LocalDateTime start, LocalDateTime end, Reservation reservation) {
-//        return (start.isAfter(reservation.getStartDateTime()) && end.isAfter(reservation.getEndDateTime()))
-//                ||
-//                (start.isBefore(reservation.getStartDateTime()) && end.isBefore(reservation.getEndDateTime()));
-        return (!start.isAfter(reservation.getStartDateTime()) && start.isBefore(reservation.getEndDateTime()));
+        return reservationRepository.findAvailableCleaners(startDateTime, endDateTime);
     }
 
     public String createReservation(NewReservationRequest request) {
-        checkIntegrity(request);
         checkIntegrityForCreate(request);
         List<Cleaner> availableCleaners = getAvailableCleaners(request.getStartDateTime(), request.getEndDateTime());
         Map<Vehicle, List<Cleaner>> cleanersByVehicle =
@@ -160,7 +129,6 @@ public class ReservationService extends BaseService<Reservation> {
     }
 
     private void checkIntegrity(BaseRequest request) {
-        // 08.00 or 22.00, Duration 2 or 4, CleanerCount 1,2 or 3, Friday
         if (getTimeFromLocalDateTime(request.getStartDateTime()).isBefore(LocalTime.parse("08:00")))
             throw new CleaningShiftBefore8Exception();
         else if (getTimeFromLocalDateTime(request.getEndDateTime()).isAfter(LocalTime.parse("22:00")))
@@ -170,6 +138,7 @@ public class ReservationService extends BaseService<Reservation> {
     }
 
     private void checkIntegrityForCreate(NewReservationRequest request) {
+        checkIntegrity(request);
         if (request.getDuration() != 2 && request.getDuration() != 4)
             throw new IllegalCleaningDurationException();
         else if (request.getCleanerCount() < 1 || request.getCleanerCount() > 3)
@@ -187,13 +156,15 @@ public class ReservationService extends BaseService<Reservation> {
 
     public String updateReservation(Long reservationId, UpdateReservationRequest request) {
         checkIntegrity(request);
-        Reservation reservation = reservationRepository.getById(reservationId);
-        if (!reservation.equals(null)) {
+        try {
+            Reservation reservation = reservationRepository.getById(reservationId);
             reservation.setStartDateTime(request.getStartDateTime());
             reservation.setEndDateTime(request.getEndDateTime());
             reservationRepository.save(reservation);
             return "Reservation successfully updated!";
         }
-        return "There is no such reservation!";
+        catch (EntityNotFoundException e){
+            return "There is no such reservation!";
+        }
     }
 }

@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class IllegalCleaningDurationException extends RuntimeException {
 
     public IllegalCleaningDurationException() {
-
         super("Cleaning duration has to be 2 or 4 hours!");
     }
 }

@@ -29,8 +29,6 @@ public class ReservationController{
     }
 
     @GetMapping("/availability-check")
-//    public List<Cleaner> checkAvailabilityForAll(@RequestParam(name = "dateTime") LocalDateTime dateTime,
-//                                                 @RequestParam(name = "duration") int duration) {
     public List<AvailabilityCheckResponse> checkAvailabilityForAll(@RequestParam(name = "dateTime")
                                                      @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
                                                              LocalDateTime dateTime,
@@ -41,14 +39,12 @@ public class ReservationController{
 
     @PostMapping("/new-reservation")
     public String createReservation(@RequestBody NewReservationRequest request) {
-
         return reservationService.createReservation(request);
     }
 
     @PutMapping("/update-reservation/{id}")
     public String updateReservation(@PathVariable(name = "id") Long reservationId,
                                     @RequestBody UpdateReservationRequest request) {
-
         return reservationService.updateReservation(reservationId, request);
     }
 }
